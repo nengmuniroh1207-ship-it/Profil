@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Qurban Digital - Masjid Jami At-Taqwa</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #065f46;
+            --primary-light: #10b981;
+            --bg-emerald: #ecfdf5;
+        }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #fefce8 100%);
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #059669; border-radius: 8px; }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+        }
+        .fade-slide-in { 
+            animation: fadeSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col justify-between selection:bg-emerald-200">
+
+    <!-- Modern Center Floating Notification Box -->
+    <div id="toastNotification" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-900/95 text-white text-xs px-6 py-4 rounded-3xl shadow-2xl z-50 transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-3 border border-emerald-500/30 backdrop-blur-md">
+        <div class="w-8 h-8 rounded-full bg-emerald-600/30 flex items-center justify-center text-emerald-400">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+        </div>
+        <span id="toastMessage" class="font-semibold">Pemberitahuan sistem</span>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="glass-nav sticky top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center max-w-md md:max-w-xl">
+            <div class="flex items-center gap-2.5 cursor-pointer group" onclick="switchTab('welcome')">
+                <div id="headerLogoContainer" class="w-10 h-10 bg-gradient-to-tr from-emerald-900 to-emerald-600 text-white rounded-2xl flex items-center justify-center font-extrabold text-sm shadow-md shadow-emerald-800/20 group-hover:rotate-6 transition duration-300 overflow-hidden">
+                    <span id="headerLogoText">TA</span>
+                </div>
+                <div>
+                    <h1 class="text-xs font-extrabold text-emerald-950 leading-tight">Masjid Jami At-Taqwa</h1>
+                    <p class="text-[10px] text-emerald-700 font-bold tracking-wider">attaqwa.berqurban.or.id</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button onclick="switchTab('cart')" id="cartNavBtn" class="relative p-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 rounded-xl transition flex items-center justify-center hidden">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">0</span>
+                </button>
+                <button onclick="switchTab('welcome')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition shadow-sm">
+                    Beranda
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto px-4 py-6 max-w-md md:max-w-xl my-auto flex-grow">
+        
+        <!-- I. HALAMAN WELCOME (LANDING PAGE) -->
+        <div id="tab-welcome" class="space-y-6 fade-slide-in">
+            <div class="text-center space-y-3 pt-2">
+                <span class="inline-flex items-center gap-2 bg-emerald-100 border border-emerald-300 text-emerald-900 text-[11px] font-bold px-4 py-1.5 rounded-full shadow-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+                    Platform Qurban Digital Terpercaya
+                </span>
+                <h2 class="text-3xl font-black text-emerald-950 tracking-tight leading-tight">
+                    Tabungan & Pemesanan Qurban Masjid Jami At-Taqwa
+                </h2>
+                <p class="text-xs text-slate-600 px-3 leading-relaxed">
+                    Tunaikan ibadah qurban dengan mudah, transparan, dan amanah. Nikmati layanan pendaftaran tabungan qurban, pemesanan hewan fleksibel mulai bulan Syawal, ID Card digital, hingga kalkulator simulasi qurban.
+                </p>
+            </div>
+
+            <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl shadow-xl shadow-emerald-950/5 border border-emerald-100/80 space-y-3">
+                <button onclick="switchTab('signin')" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-extrabold shadow-md transition flex items-center justify-center gap-2">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Masuk (Sign In)
+                </button>
+                <button onclick="switchTab('signup')" class="w-full py-3.5 bg-white border border-emerald-300 hover:bg-emerald-50 text-emerald-900 rounded-2xl text-xs font-extrabold transition flex items-center justify-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i> Daftar Akun Baru (Sign Up)
+                </button>
+                <button onclick="guestLogin()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-semibold transition">
+                    Lanjut sebagai Tamu (Eksplorasi)
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="switchTab('faq')" class="p-3 bg-white/70 hover:bg-white rounded-2xl border border-emerald-100 text-center text-xs font-bold text-emerald-900 transition">
+                    <i data-lucide="help-circle" class="w-4 h-4 mx-auto mb-1 text-emerald-700"></i> FAQ Qurban (20 Tanya Jawab)
+                </button>
+                <button onclick="switchTab('privacy')" class="p-3 bg-white/70 hover:bg-white rounded-2xl border border-emerald-100 text-center text-xs font-bold text-emerald-900 transition">
+                    <i data-lucide="shield-check" class="w-4 h-4 mx-auto mb-1 text-emerald-700"></i> Kebijakan Privasi & Visi Misi
+                </button>
+            </div>
+        </div>
+
+        <!-- II. HALAMAN SIGN UP -->
+        <div id="tab-signup" class="space-y-6 fade-slide-in hidden">
+            <div class="text-center space-y-2">
+                <span class="inline-block bg-emerald-100 text-emerald-900 text-[11px] font-bold px-3.5 py-1 rounded-full">
+                    Ahlan Wa Sahlan, Mudhohi
+                </span>
+                <h2 class="text-2xl font-black text-emerald-950">Buat Akun Peserta Baru</h2>
+                <p class="text-xs text-slate-600">Daftarkan diri Anda untuk mulai menabung dan memesan qurban.</p>
+            </div>
+
+            <div class="bg-white/90 p-6 rounded-3xl shadow-xl border border-emerald-100">
+                <form onsubmit="handleRegister(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Lengkap (Sesuai Doa Qurban)</label>
+                        <input type="text" id="regName" required placeholder="Contoh: Ahmad Fauzi" 
+                            class="w-full px-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-600 transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Nomor WhatsApp</label>
+                        <input type="text" id="regContact" required placeholder="087864799465" 
+                            class="w-full px-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-600 transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Alamat Lengkap</label>
+                        <textarea id="regAddress" required placeholder="Jl. Masjid At-Taqwa No. 10, Bekasi" rows="2"
+                            class="w-full px-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-600 transition"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Kata Sandi (Password)</label>
+                        <input type="password" id="regPass" required placeholder="Minimal 6 karakter" 
+                            class="w-full px-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-600 transition">
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs rounded-2xl shadow-md transition">
+                        Daftar & Masuk Akun
+                    </button>
+                </form>
+                <div class="mt-4 text-center text-xs text-slate-600">
+                    Sudah punya akun? <button onclick="switchTab('signin')" class="text-emerald-700 font-bold hover:underline">Masuk di sini</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- III. HALAMAN SIGN IN -->
+        <div id="tab-signin" class="space-y-6 fade-slide-in hidden">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl font-black text-emerald-950">Masuk ke Sistem</h2>
+                <p class="text-xs text-slate-600">Pilih akses masuk sebagai Peserta (Mudhohi) atau Akses Khusus Admin.</p>
+            </div>
+
+            <div class="bg-white/90 p-6 rounded-3xl shadow-xl border border-emerald-100 space-y-5">
+                <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+                    <button onclick="setLoginType('user')" id="btnTypeUser" class="flex-1 py-2 rounded-xl bg-white shadow-xs text-emerald-900 transition">Peserta (Mudhohi)</button>
+                    <button onclick="setLoginType('admin')" id="btnTypeAdmin" class="flex-1 py-2 rounded-xl text-slate-600 transition">Akses Admin</button>
+                </div>
+
+                <form id="formLoginUser" onsubmit="handleLoginUser(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Nomor WhatsApp</label>
+                        <input type="text" id="loginUser" required placeholder="087864799465" 
+                            class="w-full px-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-600 transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Kata Sandi</label>
+                        <input type="password" id="loginPassUser" required placeholder="******" 
+                            class="w-full px-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-600 transition">
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs rounded-2xl shadow-md transition">
+                        Masuk sebagai Peserta
+                    </button>
+                </form>
+
+                <form id="formLoginAdmin" onsubmit="handleLoginAdmin(event)" class="space-y-4 hidden">
+                    <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 text-[11px] text-amber-800">
+                        <strong>Catatan Admin:</strong> Cukup ketikkan nama admin untuk masuk cepat ke panel panitia.
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Admin / Pengurus</label>
+                        <input type="text" id="loginAdminName" required placeholder="Contoh: Panitia At-Taqwa" 
+                            class="w-full px-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-600 transition">
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-slate-900 hover:bg-black text-white font-extrabold text-xs rounded-2xl shadow-md transition">
+                        Masuk ke Dashboard Admin
+                    </button>
+                </form>
+            </div>
+            <div class="text-center">
+                <button onclick="switchTab('welcome')" class="text-xs text-slate-600 hover:underline">Kembali ke Beranda Utama</button>
+            </div>
+        </div>
+
+        <!-- IV. HALAMAN PROFIL PESERTA & DIGITAL ID CARD -->
+        <div id="tab-profile" class="space-y-4 hidden fade-slide-in">
+            <!-- Digital ID Card Container -->
+            <div class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-800 text-white p-6 rounded-3xl shadow-2xl relative overflow-hidden border border-emerald-600/40">
+                <div class="absolute -right-6 -bottom-6 opacity-10">
+                    <i data-lucide="shield-check" class="w-40 h-40"></i>
+                </div>
+                <div class="flex justify-between items-start border-b border-white/10 pb-4 mb-4">
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest text-emerald-300 font-extrabold">Kartu Peserta Resmi</p>
+                        <h3 class="text-sm font-black">Masjid Jami At-Taqwa</h3>
+                    </div>
+                    <span class="bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-full">
+                        ID 1447H
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-4 mb-4">
+                    <div id="profileAvatarContainer" class="w-16 h-16 rounded-2xl bg-white/20 border-2 border-white/40 flex items-center justify-center font-black text-2xl overflow-hidden shadow-inner flex-shrink-0">
+                        <span id="profileInitial">AT</span>
+                    </div>
+                    <div class="space-y-0.5 overflow-hidden">
+                        <h4 id="profileNameDisplay" class="text-base font-extrabold tracking-tight truncate">Sahabat Mudhohi</h4>
+                        <p class="text-[11px] text-emerald-200 font-mono"><strong class="text-emerald-400">Kredensial:</strong> <span id="profileCredNumber">QTR-889201</span></p>
+                        <p class="text-[11px] text-emerald-200"><strong class="text-emerald-400">Telp:</strong> <span id="profileContactDisplay">087864799465</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-black/20 p-3 rounded-2xl border border-white/10 text-[11px] space-y-1 backdrop-blur-xs">
+                    <p class="text-emerald-300 font-bold">Alamat Peserta:</p>
+                    <p id="profileAddressDisplay" class="text-slate-200 leading-snug">Jl. Masjid Jami At-Taqwa No. 10, Bekasi</p>
+                </div>
+            </div>
+
+            <!-- Tombol Unduh ID Card PDF -->
+            <button onclick="downloadIDCardPDF()" class="w-full py-3.5 bg-rose-700 hover:bg-rose-800 text-white font-extrabold text-xs rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+                <i data-lucide="file-text" class="w-4 h-4"></i> Unduh Digital ID Card (PDF / Dokumen)
+            </button>
+
+            <!-- Pengaturan Ubah Profil & Foto Lokal -->
+            <div class="bg-white/90 p-5 rounded-3xl border border-emerald-100 shadow-sm space-y-4 text-xs">
+                <h4 class="font-extrabold text-slate-800 uppercase tracking-wider">Pengaturan Akun & Unggah Foto Profil</h4>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Unggah Foto Profil dari Perangkat Lokal</label>
+                        <div class="flex items-center gap-2">
+                            <input type="file" id="userProfilePhotoUpload" accept="image/*" class="text-[10px] text-slate-600 flex-1">
+                            <button onclick="updateUserProfilePhoto()" class="px-3 py-2 bg-emerald-700 text-white font-bold rounded-xl">Unggah</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Ganti Nama Username</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="editUsername" class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl" placeholder="Username baru">
+                            <button onclick="updateUsername()" class="px-4 py-2 bg-emerald-700 text-white font-bold rounded-xl">Simpan</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Ganti Kata Sandi (Password)</label>
+                        <div class="flex gap-2">
+                            <input type="password" id="editPassword" class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl" placeholder="Password baru">
+                            <button onclick="updatePassword()" class="px-4 py-2 bg-emerald-700 text-white font-bold rounded-xl">Ubah</button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-100">
+
+                <div class="flex gap-2 pt-1">
+                    <button onclick="switchTab('dashboard')" class="flex-1 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-2xl shadow-xs transition text-center">
+                        Buka Katalog Qurban
+                    </button>
+                    <button onclick="switchTab('simulator')" class="px-4 py-3 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold rounded-2xl transition flex items-center gap-1" title="Kalkulator Simulasi Qurban">
+                        <i data-lucide="calculator" class="w-4 h-4"></i> Simulasi
+                    </button>
+                </div>
+                <div class="text-center pt-2">
+                    <button onclick="switchTab('welcome')" class="text-rose-600 font-bold hover:underline">Keluar Akun (Log Out)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- V. KATALOG HEWAN & KERANJANG BELANJA -->
+        <div id="tab-dashboard" class="space-y-4 hidden fade-slide-in">
+            <div class="bg-white/90 p-5 rounded-3xl border border-emerald-100 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h4 class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Katalog Hewan Qurban & Tabungan</h4>
+                        <p class="text-[10px] text-slate-500">Pemesanan dibuka sepanjang tahun mulai bulan Syawal.</p>
+                    </div>
+                    <div class="flex gap-1.5">
+                        <button onclick="switchTab('simulator')" class="p-2 bg-amber-100 text-amber-900 rounded-xl font-bold text-[11px] flex items-center gap-1" title="Kalkulator Simulasi">
+                            <i data-lucide="calculator" class="w-3.5 h-3.5"></i> Simulasi
+                        </button>
+                        <button onclick="switchTab('profile')" class="p-2 bg-emerald-50 text-emerald-800 rounded-xl font-bold text-[11px] flex items-center gap-1">
+                            <i data-lucide="user" class="w-3.5 h-3.5"></i> Profil
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kontrol Khusus Admin untuk Tambah Stok / Edit Hewan -->
+                <div id="adminCatalogControl" class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 space-y-3 hidden">
+                    <p class="text-xs font-extrabold text-emerald-950 flex items-center gap-1.5">
+                        <i data-lucide="shield-alert" class="w-4 h-4 text-emerald-700"></i> Panel Kontrol Admin (Tambah & Perbarui Stok/Foto)
+                    </p>
+                    <div class="space-y-2">
+                        <input type="text" id="adminNewName" placeholder="Nama Hewan / Jenis" class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="adminNewPrice" placeholder="Harga (Rp)" class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl">
+                            <input type="number" id="adminNewStock" placeholder="Jumlah Stok" class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl">
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <input type="file" id="adminNewPhoto" accept="image/*" class="text-[10px] text-slate-600">
+                            <button onclick="adminAddOrUpdateAnimal()" class="px-4 py-2 bg-emerald-700 text-white font-bold text-xs rounded-xl">Simpan / Tambah Stok</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daftar Katalog Hewan -->
+                <div id="catalogContainer" class="space-y-3"></div>
+
+                <button onclick="switchTab('cart')" class="w-full py-3 bg-emerald-800 hover:bg-emerald-900 text-white rounded-2xl text-xs font-bold shadow-md transition flex items-center justify-center gap-2">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    <span>Lihat Keranjang Belanja</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- VI. KALKULATOR SIMULASI QURBAN -->
+        <div id="tab-simulator" class="space-y-4 hidden fade-slide-in">
+            <div class="bg-gradient-to-r from-amber-600 to-amber-800 text-white p-5 rounded-3xl shadow-lg space-y-2">
+                <h3 class="text-lg font-bold">Kalkulator Simulasi Qurban</h3>
+                <p class="text-xs text-amber-100">Simulasikan rencana tabungan dan pembelian hewan qurban Anda secara berkala mulai bulan Syawal.</p>
+            </div>
+
+            <div class="bg-white/90 p-5 rounded-3xl border border-emerald-100 shadow-sm space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Pilih Jenis Hewan</label>
+                    <select id="simAnimalType" onchange="calculateSim()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+                        <option value="2800000">Kambing Standar (Rp 2.800.000)</option>
+                        <option value="2500000">Sapi Kolektif 1/7 (Rp 2.500.000)</option>
+                        <option value="19500000">Sapi Premium (Rp 19.500.000)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rencana Jangka Waktu Menabung</label>
+                    <select id="simMonths" onchange="calculateSim()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+                        <option value="3">3 Bulan Menuju Idul Adha</option>
+                        <option value="6" selected>6 Bulan (Mulai Bulan Syawal)</option>
+                        <option value="10">10 Bulan (Tabungan Panjang)</option>
+                    </select>
+                </div>
+
+                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 space-y-2">
+                    <p class="font-bold text-emerald-950 text-sm">Hasil Simulasi Tabungan:</p>
+                    <div class="flex justify-between text-slate-700">
+                        <span>Estimasi Setoran per Bulan:</span>
+                        <span id="simResultPerMonth" class="font-extrabold text-emerald-800">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-slate-700 border-t border-emerald-200 pt-2">
+                        <span>Total Biaya Qurban:</span>
+                        <span id="simResultTotal" class="font-black text-emerald-950">Rp 0</span>
+                    </div>
+                </div>
+
+                <button onclick="switchTab('dashboard')" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-2xl transition">
+                    Pilih Hewan dari Katalog Sekarang
+                </button>
+            </div>
+            <div class="text-center">
+                <button onclick="switchTab('dashboard')" class="text-xs text-emerald-700 font-bold hover:underline">Kembali ke Katalog</button>
+            </div>
+        </div>
+
+        <!-- VII. HALAMAN KERANJANG & CHECKOUT -->
+        <div id="tab-cart" class="space-y-4 hidden fade-slide-in">
+            <div class="space-y-1">
+                <h3 class="text-2xl font-black text-emerald-950">Keranjang Qurban Anda</h3>
+                <p class="text-xs text-slate-600">Ringkasan hewan qurban yang akan dipesan.</p>
+            </div>
+
+            <div class="bg-white/90 p-5 rounded-3xl border border-emerald-100 shadow-sm space-y-4">
+                <div id="cartItemsContainer" class="space-y-3 divide-y divide-slate-100"></div>
+                <div id="cartSummary" class="border-t border-emerald-100 pt-3 space-y-2 hidden">
+                    <div class="flex justify-between text-xs font-semibold text-slate-600">
+                        <span>Total Pembelian:</span>
+                        <span id="cartTotalPrice" class="text-sm font-black text-emerald-900">Rp 0</span>
+                    </div>
+                    <button onclick="checkoutCart()" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-bold shadow-md transition flex items-center justify-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        <span>Proses Pesanan Qurban</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="switchTab('dashboard')" class="text-xs text-emerald-700 font-bold hover:underline">Kembali ke Katalog Hewan</button>
+            </div>
+        </div>
+
+        <!-- VIII. DASHBOARD ADMIN -->
+        <div id="tab-admin" class="space-y-4 hidden fade-slide-in">
+            <div class="bg-slate-900 text-white p-5 rounded-3xl shadow-lg space-y-2">
+                <div class="flex justify-between items-center">
+                    <h3 id="adminTitleDisplay" class="text-lg font-bold">Panel Admin Panitia</h3>
+                    <button onclick="switchTab('welcome')" class="text-xs text-rose-400 hover:underline">Keluar Admin</button>
+                </div>
+                <p class="text-xs text-slate-300">Kelola stok hewan, kustomisasi logo platform, verifikasi pembayaran, dan unduh data.</p>
+            </div>
+
+            <div class="bg-white/90 p-5 rounded-3xl border border-emerald-100 shadow-sm space-y-3 text-xs">
+                <h4 class="font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="image" class="w-4 h-4 text-emerald-700"></i> Pengaturan Logo & Desain Platform
+                </h4>
+                <p class="text-[11px] text-slate-600">Unggah logo resmi masjid atau platform langsung dari perangkat lokal tanpa URL eksternal.</p>
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="file" id="adminLogoUpload" accept="image/*" class="text-[10px] text-slate-600">
+                    <button onclick="updatePlatformLogo()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-xs transition">
+                        Perbarui Logo
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white/90 p-5 rounded-3xl border border-emerald-100 shadow-sm space-y-4 text-xs">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-extrabold text-slate-800 uppercase tracking-wider">Daftar Peserta & Manajemen Data</h4>
+                    <button onclick="exportDataExcel()" class="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-xs flex items-center gap-1">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh Excel
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b">
+                                <th class="p-2.5">Nama Peserta</th>
+                                <th class="p-2.5">Pilihan Hewan</th>
+                                <th class="p-2.5">Status Bayar</th>
+                                <th class="p-2.5 text-center">Aksi / Verifikasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminParticipantTable" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+
+                <div class="pt-2">
+                    <button onclick="switchTab('dashboard')" class="w-full py-2.5 bg-slate-800 hover:bg-black text-white font-bold rounded-xl text-xs">
+                        Buka Manajemen Stok Katalog Hewan (Admin)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- IX. MENU FAQ & PRIVASI -->
+        <div id="tab-faq" class="space-y-4 hidden fade-slide-in">
+            <div class="space-y-1">
+                <h3 class="text-2xl font-black text-emerald-950">FAQ & Panduan Qurban</h3>
+                <p class="text-xs text-slate-600">20 Pertanyaan lengkap seputar fiqih qurban dan teknis website.</p>
+            </div>
+            <div class="space-y-2.5 text-xs max-h-[62vh] overflow-y-auto pr-1" id="faqList"></div>
+            <div class="text-center pt-2">
+                <button onclick="switchTab('welcome')" class="text-xs text-emerald-700 font-bold hover:underline">Kembali ke Beranda</button>
+            </div>
+        </div>
+
+        <div id="tab-privacy" class="space-y-4 hidden fade-slide-in">
+            <div class="space-y-1">
+                <h3 class="text-2xl font-black text-emerald-950">Privasi & Visi Misi</h3>
+                <p class="text-xs text-slate-600">Komitmen keamanan data dan integritas pelayanan masjid.</p>
+            </div>
+            <div class="bg-white/90 p-5 rounded-3xl border border-emerald-100 shadow-sm space-y-3 text-xs text-slate-600 leading-relaxed">
+                <p><strong>Visi:</strong> Menjadi sarana digitalisasi ibadah qurban yang terpercaya, transparan, dan memudahkan jamaah Masjid Jami At-Taqwa.</p>
+                <hr class="border-slate-100">
+                <p><strong>Kebijakan Privasi:</strong> Data pribadi Anda dijamin aman, sentosa, dan eksklusif digunakan untuk kepentingan administrasi qurban serta pelaporan di Masjid Jami At-Taqwa.</p>
+            </div>
+            <div class="text-center pt-2">
+                <button onclick="switchTab('welcome')" class="text-xs text-emerald-700 font-bold hover:underline">Kembali ke Beranda</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Floating WhatsApp Action Button -->
+    <a href="https://wa.me/6287864799465?text=Assalamualaikum%20Panitia%20Qurban%20At-Taqwa,%20saya%20ingin%20bertanya..." 
+       target="_blank"
+       class="fixed bottom-5 right-5 bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 z-50 group"
+       title="Hubungi Admin WhatsApp">
+        <i data-lucide="message-circle" class="w-6 h-6"></i>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-bold px-0 group-hover:px-2">
+            Admin 087864799465
+        </span>
+    </a>
+
+    <!-- Footer Copyright -->
+    <footer class="text-center py-4 text-[11px] text-slate-500 border-t border-emerald-100 bg-white/60 backdrop-blur-sm">
+        &copy; 2026 Masjid Jami At-Taqwa. attaqwa.berqurban.or.id
+    </footer>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        lucide.createIcons();
+
+        let currentUser = null;
+        let isAdminLoggedIn = false;
+        let customPlatformLogo = null;
+        let userCustomAvatar = null;
+        let cart = [];
+        let catalog = [
+            { id: 1, name: 'Kambing Standar (Perorangan)', price: 2800000, stock: 12, desc: 'Bobot ± 30 Kg • Sehat & Syar’i', img: null },
+            { id: 2, name: 'Sapi Kolektif (1/7 Patungan)', price: 2500000, stock: 14, desc: 'Bobot Sapi Total ± 280 Kg', img: null },
+            { id: 3, name: 'Sapi Premium (Perorangan)', price: 19500000, stock: 5, desc: 'Bobot ± 400 Kg • Super Prima', img: null }
+        ];
+        let participantsData = [
+            { id: 1, name: 'Ahmad Fauzi', contact: '087811223344', animal: 'Kambing Standar (Perorangan)', status: 'Sukses' },
+            { id: 2, name: 'Siti Aminah', contact: '081233445566', animal: 'Sapi Kolektif (1/7 Patungan)', status: 'Pending' }
+        ];
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const msg = document.getElementById('toastMessage');
+            msg.innerText = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function switchTab(tabId) {
+            ['welcome', 'signup', 'signin', 'profile', 'dashboard', 'simulator', 'cart', 'admin', 'faq', 'privacy'].forEach(id => {
+                const el = document.getElementById('tab-' + id);
+                if(el) el.classList.add('hidden');
+            });
+            const target = document.getElementById('tab-' + tabId);
+            if(target) target.classList.remove('hidden');
+
+            const cartNav = document.getElementById('cartNavBtn');
+            if(['dashboard', 'cart'].includes(tabId)) {
+                cartNav.classList.remove('hidden');
+                renderCatalog();
+            } else {
+                cartNav.classList.add('hidden');
+            }
+
+            if(tabId === 'cart') renderCart();
+            if(tabId === 'admin') renderAdminTable();
+            if(tabId === 'profile') updateProfileUI();
+            if(tabId === 'simulator') calculateSim();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setLoginType(type) {
+            if(type === 'user') {
+                document.getElementById('btnTypeUser').className = "flex-1 py-2 rounded-xl bg-white shadow-xs text-emerald-900 transition";
+                document.getElementById('btnTypeAdmin').className = "flex-1 py-2 rounded-xl text-slate-600 transition";
+                document.getElementById('formLoginUser').classList.remove('hidden');
+                document.getElementById('formLoginAdmin').classList.add('hidden');
+            } else {
+                document.getElementById('btnTypeAdmin').className = "flex-1 py-2 rounded-xl bg-white shadow-xs text-emerald-900 transition";
+                document.getElementById('btnTypeUser').className = "flex-1 py-2 rounded-xl text-slate-600 transition";
+                document.getElementById('formLoginAdmin').classList.remove('hidden');
+                document.getElementById('formLoginUser').classList.add('hidden');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const contact = document.getElementById('regContact').value;
+            const address = document.getElementById('regAddress').value;
+            currentUser = { 
+                name, 
+                contact, 
+                address, 
+                username: name.toLowerCase().replace(/\s+/g, '_'),
+                credNumber: 'QTR-' + Math.floor(100000 + Math.random() * 900000)
+            };
+            isAdminLoggedIn = false;
+            showToast('Alhamdulillah, pendaftaran berhasil! Ahlan Wa Sahlan, ' + name + '.');
+            switchTab('dashboard');
+        }
+
+        function handleLoginUser(e) {
+            e.preventDefault();
+            const contact = document.getElementById('loginUser').value;
+            currentUser = { 
+                name: 'Sahabat Mudhohi', 
+                contact, 
+                address: 'Jl. Masjid Jami At-Taqwa No. 10, Bekasi', 
+                username: 'mudhohi_attaqwa',
+                credNumber: 'QTR-992310'
+            };
+            isAdminLoggedIn = false;
+            switchTab('dashboard');
+        }
+
+        function handleLoginAdmin(e) {
+            e.preventDefault();
+            const adminName = document.getElementById('loginAdminName').value;
+            isAdminLoggedIn = true;
+            document.getElementById('adminTitleDisplay').innerText = "Panel Admin: " + adminName;
+            switchTab('admin');
+        }
+
+        function guestLogin() {
+            currentUser = { 
+                name: 'Tamu Pengunjung', 
+                contact: '081234567890', 
+                address: 'Bekasi, Jawa Barat', 
+                username: 'tamu_attaqwa',
+                credNumber: 'QTR-000111'
+            };
+            isAdminLoggedIn = false;
+            switchTab('dashboard');
+        }
+
+        function updatePlatformLogo() {
+            const fileInput = document.getElementById('adminLogoUpload');
+            if(fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    customPlatformLogo = e.target.result;
+                    applyPlatformLogo();
+                    showToast('Logo platform berhasil diperbarui dari perangkat lokal!');
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                showToast('Pilih file gambar logo terlebih dahulu.');
+            }
+        }
+
+        function applyPlatformLogo() {
+            const container = document.getElementById('headerLogoContainer');
+            if(customPlatformLogo) {
+                container.innerHTML = `<img src="${customPlatformLogo}" class="w-full h-full object-cover">`;
+            }
+        }
+
+        function updateUserProfilePhoto() {
+            const fileInput = document.getElementById('userProfilePhotoUpload');
+            if(fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    userCustomAvatar = e.target.result;
+                    updateProfileUI();
+                    showToast('Foto profil berhasil diunggah dari perangkat!');
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                showToast('Pilih file foto profil terlebih dahulu.');
+            }
+        }
+
+        function updateProfileUI() {
+            if(!currentUser) return;
+            const avatarBox = document.getElementById('profileAvatarContainer');
+            if(userCustomAvatar) {
+                avatarBox.innerHTML = `<img src="${userCustomAvatar}" class="w-full h-full object-cover">`;
+            } else {
+                document.getElementById('profileInitial').innerText = currentUser.name.substring(0,2).toUpperCase();
+            }
+            document.getElementById('profileNameDisplay').innerText = currentUser.name;
+            document.getElementById('profileContactDisplay').innerText = currentUser.contact;
+            document.getElementById('profileCredNumber').innerText = currentUser.credNumber;
+            document.getElementById('profileAddressDisplay').innerText = currentUser.address;
+            document.getElementById('editUsername').value = currentUser.username;
+        }
+
+        function updateUsername() {
+            const newName = document.getElementById('editUsername').value;
+            if(newName) {
+                currentUser.username = newName;
+                document.getElementById('profileNameDisplay').innerText = newName;
+                showToast('Username berhasil diperbarui!');
+            }
+        }
+
+        function updatePassword() {
+            showToast('Kata sandi berhasil diubah!');
+        }
+
+        function downloadIDCardPDF() {
+            let fileContent = `KARTU PESERTA QURBAN DIGITAL (ID CARD)\n`;
+            fileContent += `Masjid Jami' At-Taqwa (attaqwa.berqurban.or.id)\n`;
+            fileContent += `--------------------------------------------------\n`;
+            fileContent += `Nama Peserta  : ${currentUser.name}\n`;
+            fileContent += `No. Kredensial: ${currentUser.credNumber}\n`;
+            fileContent += `No. Telepon   : ${currentUser.contact}\n`;
+            fileContent += `Alamat        : ${currentUser.address}\n`;
+            fileContent += `Status        : Terverifikasi Resmi Masjid Jami At-Taqwa\n`;
+            fileContent += `--------------------------------------------------\n`;
+
+            const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ID_Card_Qurban_${currentUser.credNumber}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Digital ID Card berhasil diunduh ke perangkat Anda!');
+        }
+
+        // Render Katalog & Kontrol Admin (Stok & Foto Lokal)
+        function renderCatalog() {
+            const container = document.getElementById('catalogContainer');
+            container.innerHTML = '';
+            
+            const adminControl = document.getElementById('adminCatalogControl');
+            if(isAdminLoggedIn) {
+                adminControl.classList.remove('hidden');
+            } else {
+                adminControl.classList.add('hidden');
+            }
+
+            catalog.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "border border-slate-100 p-3.5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50 gap-3";
+                
+                let imgHtml = `<div class="w-16 h-16 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 font-bold text-xs"><i data-lucide="image" class="w-6 h-6"></i></div>`;
+                if(item.img) {
+                    imgHtml = `<img src="${item.img}" class="w-16 h-16 rounded-xl object-cover border border-slate-200">`;
+                }
+
+                let adminEditBtn = '';
+                if(isAdminLoggedIn) {
+                    adminEditBtn = `<button onclick="editStock(${item.id})" class="px-2.5 py-1 bg-amber-600 text-white rounded-lg text-[10px] font-bold">Edit Stok/Harga</button>`;
+                }
+
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        ${imgHtml}
+                        <div>
+                            <p class="text-xs font-extrabold text-emerald-950">${item.name}</p>
+                            <p class="text-[10px] text-slate-500">${item.desc} • <strong class="text-emerald-700">Stok: ${item.stock} Ekor</strong></p>
+                            <p class="text-xs font-black text-emerald-700 mt-0.5">Rp ${item.price.toLocaleString('id-ID')}</p>
+                            <div class="mt-1">${adminEditBtn}</div>
+                        </div>
+                    </div>
+                    <button onclick="addToCart('${item.name}', ${item.price})" class="w-full sm:w-auto px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Beli / Keranjang
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function adminAddOrUpdateAnimal() {
+            const name = document.getElementById('adminNewName').value;
+            const price = parseFloat(document.getElementById('adminNewPrice').value);
+            const stock = parseInt(document.getElementById('adminNewStock').value);
+            const fileInput = document.getElementById('adminNewPhoto');
+
+            if(!name || !price || isNaN(stock)) {
+                showToast('Nama, harga, dan jumlah stok wajib diisi dengan benar!');
+                return;
+            }
+
+            if(fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    catalog.push({ id: Date.now(), name, price, stock, desc: 'Stok Terbaru Masjid At-Taqwa', img: e.target.result });
+                    renderCatalog();
+                    showToast('Stok hewan qurban berhasil diperbarui dengan foto lokal!');
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                catalog.push({ id: Date.now(), name, price, stock, desc: 'Stok Terbaru Masjid At-Taqwa', img: null });
+                renderCatalog();
+                showToast('Stok hewan qurban berhasil diperbarui!');
+            }
+        }
+
+        function editStock(id) {
+            const item = catalog.find(i => i.id === id);
+            if(!item) return;
+            const newStock = prompt(`Masukkan jumlah stok baru untuk ${item.name}:`, item.stock);
+            if(newStock !== null && !isNaN(newStock)) {
+                item.stock = parseInt(newStock);
+                renderCatalog();
+                showToast('Stok berhasil diperbarui!');
+            }
+        }
+
+        // Kalkulator Simulasi Qurban
+        function calculateSim() {
+            const price = parseFloat(document.getElementById('simAnimalType').value);
+            const months = parseInt(document.getElementById('simMonths').value);
+            const perMonth = Math.ceil(price / months);
+
+            document.getElementById('simResultPerMonth').innerText = 'Rp ' + perMonth.toLocaleString('id-ID');
+            document.getElementById('simResultTotal').innerText = 'Rp ' + price.toLocaleString('id-ID');
+        }
+
+        // Keranjang Belanja
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCartBadge();
+            showToast('Alhamdulillah! "' + name + '" berhasil dimasukkan ke keranjang.');
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            if(cart.length > 0) {
+                badge.innerText = cart.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const summary = document.getElementById('cartSummary');
+            container.innerHTML = '';
+
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">Keranjang qurban Anda masih kosong.</div>`;
+                summary.classList.add('hidden');
+                return;
+            }
+
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price;
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center py-2.5 text-xs";
+                div.innerHTML = `
+                    <div>
+                        <p class="font-extrabold text-emerald-950">${item.name}</p>
+                        <p class="text-[10px] text-emerald-700 font-semibold">Rp ${item.price.toLocaleString('id-ID')}</p>
+                    </div>
+                    <button onclick="removeFromCart(${index})" class="text-rose-500 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('cartTotalPrice').innerText = 'Rp ' + total.toLocaleString('id-ID');
+            summary.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            renderCart();
+        }
+
+        function checkoutCart() {
+            if(currentUser && cart.length > 0) {
+                participantsData.push({
+                    id: Date.now(),
+                    name: currentUser.name,
+                    contact: currentUser.contact,
+                    animal: cart.map(i => i.name).join(', '),
+                    status: 'Pending'
+                });
+            }
+            showToast('Alhamdulillah! Pesanan qurban berhasil diajukan.');
+            cart = [];
+            updateCartBadge();
+            switchTab('dashboard');
+        }
+
+        // Panel Admin & Ekspor
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminParticipantTable');
+            tbody.innerHTML = '';
+
+            participantsData.forEach((p, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-2.5">
+                        <p class="font-bold text-slate-900">${p.name}</p>
+                        <p class="text-[10px] text-slate-500">${p.contact}</p>
+                    </td>
+                    <td class="p-2.5 text-slate-700">${p.animal}</td>
+                    <td class="p-2.5">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${p.status === 'Sukses' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                            ${p.status}
+                        </span>
+                    </td>
+                    <td class="p-2.5 text-center space-x-1">
+                        <button onclick="toggleStatus(${index})" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded text-[10px] font-bold">Ubah Status</button>
+                        <a href="https://wa.me/62${p.contact.replace(/^0/, '')}?text=Assalamualaikum%20Bapak/Ibu%20${p.name},%20konfirmasi%20qurban%20Anda%20di%20Masjid%20At-Taqwa%20telah%20diproses." target="_blank" class="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold inline-block">WA</a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleStatus(index) {
+            participantsData[index].status = participantsData[index].status === 'Pending' ? 'Sukses' : 'Pending';
+            renderAdminTable();
+        }
+
+        function exportDataExcel() {
+            let csvContent = "data:text/csv;charset=utf-8,ID,Nama Peserta,Kontak,Pilihan Hewan,Status Pembayaran\n";
+            participantsData.forEach(p => {
+                csvContent += `${p.id},"${p.name}","${p.contact}","${p.animal}",${p.status}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "data_peserta_qurban_attaqwa.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Data peserta qurban berhasil diunduh dalam format spreadsheet/Excel!');
+        }
+
+        // Data 20 FAQ
+        const faqs = [
+            { q: "Kapan waktu mulai pendaftaran qurban dibuka?", a: "Pendaftaran dan pemesanan hewan qurban dibuka fleksibel sepanjang tahun mulai bulan Syawal selepas Idul Fitri." },
+            { q: "Apa hukum melaksanakan ibadah qurban?", a: "Hukum qurban adalah Sunnah Muakkadah (sunnah sangat dianjurkan) bagi yang mampu." },
+            { q: "Apakah qurban bisa atas nama orang yang sudah meninggal?", a: "Boleh, menurut mazhab Syafi'i pahala qurban dapat diniatkan untuk orang yang telah wafat." },
+            { q: "Apa syarat hewan sah qurban?", a: "Sehat, tidak cacat, dan cukup umur (kambing min. 1 tahun, sapi min. 2 tahun)." },
+            { q: "Apa beda kambing dan sapi kolektif?", a: "Kambing untuk 1 orang, sapi kolektif maksimal untuk 7 orang." },
+            { q: "Bagaimana tahu hewan sudah disembelih?", a: "Sistem mengirimkan notifikasi status dan update berkala melalui WhatsApp." },
+            { q: "Apakah bisa menyaksikan langsung di masjid?", a: "Sangat bisa! Shohibul qurban dipersilakan hadir langsung di Masjid Jami At-Taqwa." },
+            { q: "Bagaimana jika tidak bisa hadir saat penyembelihan?", a: "Panitia masjid akan mengurus seluruh proses dari pemotongan hingga distribusi daging." },
+            { q: "Apakah berhak mendapat bagian daging qurban?", a: "Ya, dianjurkan mengambil sebagian kecil daging untuk dikonsumsi (maksimal sepertiga)." },
+            { q: "Bolehkah menjual kulit qurban?", a: "Tidak boleh menjual daging atau kulit qurban maupun menjadikannya upah jagal." },
+            { q: "Kapan batas waktu penyembelihan?", a: "Tanggal 10 Dzulhijjah setelah shalat Id serta hari Tasyrik (11, 12, 13 Dzulhijjah)." },
+            { q: "Bagaimana cara mendaftar di website ini?", a: "Buat akun melalui menu Sign Up, pilih katalog hewan, dan masukkan ke keranjang." },
+            { q: "Apakah tersedia tabungan qurban?", a: "Ya, Anda bisa menabung bertahap mulai bulan Syawal hingga menjelang Idul Adha." },
+            { q: "Metode pembayaran apa saja yang didukung?", a: "Transfer bank, QRIS digital, serta konfirmasi manual ke admin panitia." },
+            { q: "Bagaimana jika kuota sapi belum terpenuhi?", a: "Panitia akan membantu mencarikan jamaah lain untuk melengkapi kuota kelompok." },
+            { q: "Apakah mendapat sertifikat qurban?", a: "Ya, sertifikat digital shohibul qurban dapat diakses setelah transaksi sukses." },
+            { q: "Bagaimana mengubah nama yang didoakan?", a: "Dapat menghubungi admin panitia melalui WhatsApp sebelum hari pemotongan." },
+            { q: "Apakah uang tabungan bisa dikembalikan jika batal?", a: "Mengikuti kebijakan DKM Masjid Jami At-Taqwa; silakan hubungi admin." },
+            { q: "Apakah ada biaya tambahan di katalog?", a: "Harga sudah termasuk estimasi operasional perawatan dan pemotongan oleh panitia." },
+            { q: "Siapa yang dihubungi saat ada kendala?", a: "Hubungi admin melalui tombol WhatsApp mengambang di nomor 087864799465." }
+        ];
+
+        const faqContainer = document.getElementById('faqList');
+        faqs.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = "bg-white p-3.5 rounded-2xl border border-emerald-100 shadow-xs";
+            div.innerHTML = `
+                <p class="font-bold text-emerald-950 mb-1 flex items-start gap-2">
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.5 rounded font-bold">${index + 1}</span>
+                    <span>${item.q}</span>
+                </p>
+                <p class="text-slate-600 leading-relaxed pl-6">${item.a}</p>
+            `;
+            faqContainer.appendChild(div);
+        });
+    </script>
+</body>
+</html>
